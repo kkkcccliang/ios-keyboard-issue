@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="x5-orientation" content="portrait">
+    <meta name="full-screen" content="yes">
+    <meta name="x5-fullscreen" content="true">
+    <title></title>
+    <style>
+        html body {
+            padding: 0;
+            margin: 0;
+            top: 0;
+            left: 0;
+        }
+        .test-input {
+            width: 70%;
+            border: solid #000 1px;
+            height: 30px;
+        }
+        .submit_btn {
+            width: 20%;
+            right: 2px;
+            height: 30px;
+        }
+        #log-outer {
+            width: 100%;
+            height: 300px;
+            overflow: auto;
+            border: solid 1px blue;
+            position: absolute;
+            bottom: 40px;
+        }
+        #log {
+            width: 100%;
+        }
+        #form {
+            width: 100%;
+            bottom: 0;
+            position: absolute;
+        }
+    </style>
+    <script>
+
+        var docInputTimeout = null;
+        var scrollTopInterval = null;
+        var $log;
+
+        function docLoaded() {
+            if (!/(ipod|iphone|ipad)/i.test(navigator.userAgent)) {
+                document.getElementById('form').innerHTML = 'test me on ios device';
+                return;
+            }
+            $log = document.getElementById('log');
+        }
+
+        function setScrollTopInterval() {
+            printLog('setScrollTopInterval');
+            scrollTopInterval = setInterval(function () {
+                document.body.scrollTop = document.body.scrollHeight;
+            }, 100);
+        }
+
+        function clearScrollTopInterval() {
+            printLog('clearScrollTopInterval');
+            clearInterval(scrollTopInterval);
+        }
+
+        function onDocumentInput() {
+            clearScrollTopInterval();
+            clearTimeout(docInputTimeout);
+
+            // 如果1秒后用户没有再输入，再把定时器搞起来
+            docInputTimeout = setTimeout(function () {
+                setScrollTopInterval();
+            }, 1000);
+        }
+
+        function bindDocumentInput() {
+            printLog('bindDocumentInput');
+            document.addEventListener('input', onDocumentInput);
+        }
+
+        function unbindDocumentInput() {
+            printLog('unbindDocumentInput');
+            clearTimeout(docInputTimeout);
+            document.removeEventListener('input', onDocumentInput);
+        }
+
+        function onInputFocus() {
+            printLog('onInputFocus');
+            setScrollTopInterval();
+            bindDocumentInput();
+        }
+
+        function onInputBlur() {
+            printLog('onInputBlur');
+            clearScrollTopInterval();
+            unbindDocumentInput();
+        }
+
+        function clickButton() {
+            printLog('button clicked');
+        }
+
+        function printLog(str) {
+            var $children = $log.children;
+            if ($children && $children.length >= 100) {
+                $log.removeChild($children[0]);
+            }
+            var $li = document.createElement('li');
+            $li.appendChild(document.createTextNode(str));
+            $log.appendChild($li);
+            $li.scrollIntoView();
+        }
+
+    </script>
+</head>
+<body onload="docLoaded();">
+<div>
+    <div id="log-outer">
+        <ul id="log"></ul>
+    </div>
+    <form id="form" onsubmit="return false;">
+        <input type="text" class="test-input" onfocus="onInputFocus();" onblur="onInputBlur();"/>
+        <button class="submit_btn" onclick="clickButton()">点我</button>
+    </form>
+</div>
+</body>
+</html>
