@@ -2,6 +2,8 @@
 A demo illustrate the IOS keyboard issue in web app
 一个简单的例子说明web应用在IOS设备上的键盘问题以及解决方法
 
+Test on iphone4s(IOS8), iPhone5/5s(IOS8/IOS9), iPhone6/6plus(IOS9), iPad(IOS9)
+
 ## 问题描述
 - 在IOS设备上，我们无法获得键盘的准确高度，如果输入框在底部的时候，键盘弹起时，输入框就有可能被键盘遮挡。
 
